@@ -1,0 +1,141 @@
+.ps-prdtext {
+    overflow: hidden;
+    position: relative;
+}
+
+.ps-morelessbtn {
+    background: none;
+    padding: 3px 0;
+    line-height: 1;
+    border: none;
+    margin: 0;
+    font-size: 15px;
+    color: #999;
+    display: inline-block;
+    border-bottom: 1px dotted #000;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.ps-morelessbtn:hover, .ps-morelessbtn:focus {
+    border-bottom-color: transparent;
+}
+
+.ps-product {
+    font-family: OpenSans, Arial, sans-serif;
+    font-size: 18px;
+    line-height: 1.35;
+    padding-bottom: 30px;
+    color: #1a1a1a;
+}
+
+.ps-product__block {
+    padding: 20px 0;
+}
+
+.ps-product__subtitle {
+    font-weight: bold;
+    padding-bottom: 25px;
+}
+
+.ps-product__subcontent {
+}
+
+.ps-product__specifications {
+}
+
+.ps-characteristics {
+    margin: 0 -7px;
+    border-collapse: collapse;
+}
+
+.ps-characteristics tr {
+}
+
+.ps-characteristics th, .ps-characteristics td {
+    padding: 5px 7px;
+    border: none;
+    vertical-align: text-bottom;
+}
+
+.ps-characteristics th {
+    font-weight: 600;
+    text-align: left;
+    padding-right: 25px;
+}
+
+.ps-product__delivery {
+}
+
+.ps-delivery {
+}
+
+.ps-delivery a {
+    color: inherit;
+}
+
+.ps-delivery a:hover, .ps-delivery a:focus {
+    text-decoration: none;
+}
+
+.ps-delivery__table {
+    border-collapse: collapse;
+    background: #fff;
+}
+
+.ps-delivery__table thead {
+    background: #e4e4e4;
+}
+
+.ps-delivery__table tbody {
+}
+
+.ps-delivery__table tr {
+}
+
+.ps-delivery__table th, .ps-delivery__table td {
+    padding: 10px;
+}
+
+.ps-delivery__table th {
+    font-weight: 600;
+    text-align: left;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.ps-delivery__notice {
+    padding-top: 40px;
+}
+
+@media (max-width: 767px) {
+    .ps-characteristics {
+        display: block;
+    }
+
+    .ps-characteristics tbody {
+        display: block;
+    }
+
+    .ps-characteristics tr {
+        display: block;
+        padding: 7px 0;
+    }
+
+    .ps-characteristics th, .ps-characteristics td {
+        display: block;
+        padding: 0px 7px;
+    }
+
+    .ps-delivery__table thead {
+    }
+
+    .ps-delivery__table tbody {
+    }
+
+    .ps-delivery__table tr {
+    }
+
+    .ps-delivery__table th, .ps-delivery__table td {
+    }
+}
