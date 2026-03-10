@@ -40,9 +40,49 @@
                     <?php endif; ?>        
                     <br>
                     <?php the_field('b/y'); ?>
-              <?php the_field('b/y_url'); ?>
+              <?php the_field('b/y_url'); ?> 
                 </div>
             </div>
+
+            <?php
+            $rail_char_fields = [
+                'Марка рельса'             => get_field('rail_brand'),
+                'Высота, мм'               => get_field('height_mm'),
+                'Длина, мм'                => get_field('length_mm'),
+                'Ширина, мм'               => get_field('width_mm'),
+                'Марка стали'              => get_field('steel_grade'),
+                'ГОСТ'                     => get_field('gost'),
+                'Вес 1 шт.'                => get_field('weight_1_pcs'),
+                'Вес 1 метра рельса (кг)'  => get_field('rail_1_meter_kg'),
+                'Мерная длина (м)'         => get_field('measuring_length_m'),
+            ];
+            $state_val = get_field('state');
+            if (!empty($state_val)) {
+                $rail_char_fields['Состояние'] = is_array($state_val) ? implode(', ', $state_val) : $state_val;
+            }
+            $rail_char_fields = array_filter($rail_char_fields, function($v) {
+                return $v !== '' && $v !== null && $v !== false;
+            });
+            ?>
+            <?php if (!empty($rail_char_fields)): ?>
+            <div class="ps-product" style="padding-bottom: 0;">
+                <div class="ps-product__block">
+                    <div class="ps-product__subtitle">Характеристики:</div>
+                    <div class="ps-product__subcontent">
+                        <div class="ps-product__specifications">
+                            <table class="ps-characteristics">
+                                <?php foreach ($rail_char_fields as $label => $value): ?>
+                                <tr>
+                                    <th><?php echo esc_html($label); ?>:</th>
+                                    <td><?php echo esc_html($value); ?></td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
 
             <?php $product_page = get_field('product_page') ?>
             <?php if (!!get_field('is_product_page')): ?>

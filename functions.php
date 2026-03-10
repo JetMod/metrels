@@ -781,10 +781,124 @@ function number_correct($raw)
 
 add_action('wp_enqueue_scripts', 'ps_scripts', 999);
 function ps_scripts() {
-	wp_enqueue_style('ps', get_stylesheet_directory_uri() . '/css/ps.css', array(), '1.0.1', 'all');
+	wp_enqueue_style('ps', get_stylesheet_directory_uri() . '/css/ps.css', array(), '1.0.2', 'all');
 	wp_enqueue_script('readmore', get_stylesheet_directory_uri() . '/js/readmore.js', array('jquery'), '1.0.1', true);
-	wp_enqueue_script('ps', get_stylesheet_directory_uri() . '/js/ps.js', array('jquery'), '1.0.1', true);
+	wp_enqueue_script('ps', get_stylesheet_directory_uri() . '/js/ps.js', array('jquery'), '1.0.2', true);
+	wp_localize_script('ps', 'catalogFilterData', [
+		'ajaxUrl' => admin_url('admin-ajax.php'),
+		'nonce'   => wp_create_nonce('catalog_filter_nonce'),
+	]);
 }
+
+/**
+ * AJAX-обработчик фильтрации товаров в каталоге
+ */
+add_action('wp_ajax_filter_catalog_products', 'filter_catalog_products_handler');
+add_action('wp_ajax_nopriv_filter_catalog_products', 'filter_catalog_products_handler');
+
+function filter_catalog_products_handler() {
+	check_ajax_referer('catalog_filter_nonce', 'nonce');
+
+	$category_id = isset($_POST['category_id']) ? intval($_POST['category_id']) : 0;
+	$filters     = isset($_POST['filters']) && is_array($_POST['filters']) ? $_POST['filters'] : [];
+
+	$meta_query   = ['relation' => 'AND'];
+
+	// Текстовые поля — точное совпадение (IN)
+	$text_fields = ['rail_brand', 'steel_grade', 'gost'];
+	foreach ($text_fields as $fname) {
+		if (!empty($filters[$fname])) {
+			$values = array_map('sanitize_text_field', (array) $filters[$fname]);
+			$meta_query[] = [
+				'key'     => $fname,
+				'value'   => $values,
+				'compare' => 'IN',
+			];
+		}
+	}
+
+	// Числовые поля — диапазон (от / до)
+	$range_fields = ['height_mm', 'length_mm', 'width_mm', 'weight_1_pcs', 'rail_1_meter_kg', 'measuring_length_m'];
+	foreach ($range_fields as $fname) {
+		if (!empty($filters[$fname]) && is_array($filters[$fname])) {
+			$min = isset($filters[$fname]['min']) && $filters[$fname]['min'] !== '' ? floatval($filters[$fname]['min']) : null;
+			$max = isset($filters[$fname]['max']) && $filters[$fname]['max'] !== '' ? floatval($filters[$fname]['max']) : null;
+			if ($min !== null && $max !== null) {
+				$meta_query[] = [
+					'key'     => $fname,
+					'value'   => [$min, $max],
+					'compare' => 'BETWEEN',
+					'type'    => 'NUMERIC',
+				];
+			} elseif ($min !== null) {
+				$meta_query[] = [
+					'key'     => $fname,
+					'value'   => $min,
+					'compare' => '>=',
+					'type'    => 'NUMERIC',
+				];
+			} elseif ($max !== null) {
+				$meta_query[] = [
+					'key'     => $fname,
+					'value'   => $max,
+					'compare' => '<=',
+					'type'    => 'NUMERIC',
+				];
+			}
+		}
+	}
+
+	// Поле "Состояние" — чекбокс ACF, хранится сериализованным массивом
+	if (!empty($filters['state'])) {
+		$state_values = array_map('sanitize_text_field', (array) $filters['state']);
+		$state_meta   = ['relation' => 'OR'];
+		foreach ($state_values as $sv) {
+			$state_meta[] = [
+				'key'     => 'state',
+				'value'   => '"' . $sv . '"',
+				'compare' => 'LIKE',
+			];
+		}
+		$meta_query[] = $state_meta;
+	}
+
+	$args = [
+		'posts_per_page' => -1,
+		'category'       => $category_id,
+	];
+	if (count($meta_query) > 1) {
+		$args['meta_query'] = $meta_query;
+	}
+
+	$posts = get_posts($args);
+
+	ob_start();
+	foreach ($posts as $post) {
+		setup_postdata($post);
+		$post_id = $post->ID;
+		?>
+		<div class="catalog__item">
+			<div class="card">
+				<img class="card__img" src="<?php echo esc_url(get_the_post_thumbnail_url($post_id)); ?>" alt="<?php echo esc_attr(get_the_title($post_id)); ?>">
+				<h3 class="card__title"><a href="<?php echo esc_url(get_permalink($post_id)); ?>"><?php echo esc_html(get_the_title($post_id)); ?></a></h3>
+				<?php if (get_field('link-gost', $post_id)): ?>
+					<a class="card__gost" target="_blank" href="<?php echo esc_url(get_field('link-gost', $post_id)); ?>" rel="noopener nofollow noreferrer"><?php echo esc_html(get_the_excerpt()); ?></a>
+				<?php endif; ?>
+				<span class="card__gost price"><?php the_field('price', $post_id); ?></span>
+				<a class="popup-with-zoom-anim card__button button" href="#small-dialog">Оформить заявку</a>
+				<a class="card__gost" href="<?php echo esc_url(get_permalink($post_id)); ?>">Подробнее</a>
+			</div>
+		</div>
+		<?php
+	}
+	wp_reset_postdata();
+	$html = ob_get_clean();
+
+	wp_send_json_success(['html' => $html, 'count' => count($posts)]);
+}
+/**
+ * Конец AJAX-обработчика фильтрации
+ */
 
 function custom_filter_acf_text_field($value, $post_id, $field) {
 	if ($field['name'] === 'modal-description') {
