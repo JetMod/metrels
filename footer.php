@@ -111,6 +111,7 @@
 
         </div>  
         <div class="classeshr"> </div>
+        <div class="footer__disclaimer">*Все изображения на сайте условны и могут отличаться от реального вида продукции</div>
         <div class="footer__copyright">© Все права защищены ООО "МетРельс" 2018-<?php echo date('Y') ?></div>
     </div>
 </footer>

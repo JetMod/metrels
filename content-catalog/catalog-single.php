@@ -20,6 +20,7 @@
                             <?php the_post_thumbnail('medium'); ?>
                         <?php endif ?>
                     <?php endif ?>
+                    <p><em>*Изображение является схематичным</em></p>
                 </div>
                 <div class="postdescr" id="proddescr">
                     <div class="prodprice"><span class="pricelable">Цена: </span> <span class="card__gost price"><?php the_field('price'); ?></span></div>
@@ -152,10 +153,9 @@
                     <?php setup_postdata($post) ?>
                     <div class="catalog__item">
                         <div class="card">
+                            <a class="card__link-overlay" href="<?php the_permalink() ?>" aria-hidden="true" tabindex="-1"></a>
                             <img class="card__img" src="<?php the_post_thumbnail_url() ?>" alt="<?php the_title() ?>">
-                            <h3 class="card__title">
-                                <a class="" href="<?php the_permalink() ?>"><?php the_title() ?></a>
-                            </h3>
+                            <h3 class="card__title"><?php the_title() ?></h3>
 
                             <?php if(get_field('link-gost', $post->ID)): ?>
                             <a class="card__gost" target="_blank" href="<?php the_field('link-gost') ?>" rel="noopener nofollow noreferrer"><?php the_excerpt() ?></a>
@@ -163,8 +163,6 @@
 
                             <span class="card__gost price"><?php the_field('price') ?></span>
                             <a class="popup-with-zoom-anim card__button button" href="#small-dialog">Оформить заявку</a>
-
-                            <a class="card__gost" href="https://metrels.ru/shpaly/shpaly-sh-1/">Подробнее</a>
                         </div>
                     </div>
                     <?php endforeach; wp_reset_postdata() ?>

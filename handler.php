@@ -22,7 +22,8 @@ if (!Validator::isValidPhone($phone)) {
 	exit;
 }
 
-// Ключ задаётся в config.local.php (не в репозитории) или переменной окружения SMARTCAPTCHA_SERVER_KEY
+// Ключ задаётся в локальном конфиге (config.local.php, не хранится в git)
+// или через переменную окружения SMARTCAPTCHA_SERVER_KEY.
 if (file_exists(__DIR__ . '/config.local.php')) {
 	require_once __DIR__ . '/config.local.php';
 }

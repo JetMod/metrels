@@ -879,14 +879,14 @@ function filter_catalog_products_handler() {
 		?>
 		<div class="catalog__item">
 			<div class="card">
+				<a class="card__link-overlay" href="<?php echo esc_url(get_permalink($post_id)); ?>" aria-hidden="true" tabindex="-1"></a>
 				<img class="card__img" src="<?php echo esc_url(get_the_post_thumbnail_url($post_id)); ?>" alt="<?php echo esc_attr(get_the_title($post_id)); ?>">
-				<h3 class="card__title"><a href="<?php echo esc_url(get_permalink($post_id)); ?>"><?php echo esc_html(get_the_title($post_id)); ?></a></h3>
+				<h3 class="card__title"><?php echo esc_html(get_the_title($post_id)); ?></h3>
 				<?php if (get_field('link-gost', $post_id)): ?>
 					<a class="card__gost" target="_blank" href="<?php echo esc_url(get_field('link-gost', $post_id)); ?>" rel="noopener nofollow noreferrer"><?php echo esc_html(get_the_excerpt()); ?></a>
 				<?php endif; ?>
 				<span class="card__gost price"><?php the_field('price', $post_id); ?></span>
 				<a class="popup-with-zoom-anim card__button button" href="#small-dialog">Оформить заявку</a>
-				<a class="card__gost" href="<?php echo esc_url(get_permalink($post_id)); ?>">Подробнее</a>
 			</div>
 		</div>
 		<?php

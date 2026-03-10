@@ -220,7 +220,7 @@
     max-height: 150px;
     overflow-y: auto;
 }
-
+ 
 .catalog-filter__option {
     display: flex;
     align-items: center;
@@ -439,7 +439,7 @@
     }
 
     .catalog-filter__group {
-        min-width: calc(50% - 8px);
+        min-width: calc(100% - 8px);
     }
 
     .catalog-filter__toggle {
@@ -449,4 +449,20 @@
     .catalog-filter__body {
         padding: 14px 14px 18px;
     }
+}
+
+
+
+.footer__disclaimer {
+    flex: 1 0 100%;
+    font-family: OpenSans, Arial, sans-serif;
+    color: #777;
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.footer__copyright{
+    margin-top: 10px;
 }
